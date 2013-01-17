@@ -1,0 +1,31 @@
+{
+  "name": "voxel-camera",
+  "description": "A camera for voxeljs",
+  "version": "0.1.0",
+  "homepage": "https://github.com/shama/voxel-camera",
+  "author": {
+    "name": "Kyle Robinson Young",
+    "email": "kyle@dontkry.com",
+    "url": "http://dontkry.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shama/voxel-camera.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shama/voxel-camera/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/shama/voxel-camera/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "keywords": [
+    "voxel",
+    "camera"
+  ]
+}
