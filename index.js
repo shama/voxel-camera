@@ -8,10 +8,12 @@ function Camera(options) {
   options = options || {};
   if (options.THREE) options = {game:options};
   if (!options.game) throw new Error('Must specify a game.');
-  self.game = options.game;
-  options.marker = options.marker || false;
-  self.readable = true;
-  self._emitPng = false;
+  self.game      = options.game;
+  options.marker = options.marker  || false;
+  this._quality  = options.quality || 0.75;
+  this._type     = options.type    || 'image/png';
+  self.readable  = true;
+  self._emitPng  = false;
 
   self._camera = new self.game.THREE.PerspectiveCamera(
     60, self.game.width / self.game.height, 1, 10000
@@ -55,7 +57,7 @@ Camera.prototype.render = function(follow, offset, look) {
     self.game.renderer.render(self.game.scene, self._camera, monitor, true);
   });
   if (self.listeners('data').length > 0 && self._emitPng) {
-    self.emit('data', self.game.renderer.domElement.toDataURL('image/png'));
+    self.emit('data', self.game.renderer.domElement.toDataURL(self._type, self._quality));
   }
   if (follow) {
     var camOffset = new self.game.THREE.Vector3(0, 0, 1)
