@@ -1,7 +1,7 @@
 {
   "name": "voxel-camera",
   "description": "A camera for voxeljs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/shama/voxel-camera",
   "author": {
     "name": "Kyle Robinson Young",

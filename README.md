@@ -43,6 +43,22 @@ var createCameraControl = require('voxel-camera');
 var cameraControl = createCameraControl({game: game, marker: true});
 ```
 
+If you would like to get a PNG stream from the camera:
+
+```js
+var cameraControl = createCameraControl(game);
+cameraControl.resume();
+
+var img = document.getElementById('myimg');
+cameraControl.on('data', function(pngData) {
+  img.src = pngData;
+});
+```
+
+_Warning: This uses `canvas.toDataURL('image/png')` which is currently a really
+expensive operation in the browser. Might want to consider throttling. If anyone
+has a suggestion on a less expensive way, I'd love to hear it!_
+
 ## install
 With [npm](http://npmjs.org) do:
 
@@ -51,6 +67,7 @@ npm install voxel-camera
 ```
 
 ## release history
+* 0.1.1 - convert into a stream and emit pngs :D
 * 0.1.0 - initial release
 
 ## license

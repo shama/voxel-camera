@@ -1,10 +1,17 @@
+var Stream = require('stream');
+var util = require('util');
+
 function Camera(options) {
   var self = this;
+  Stream.call(self);
+
   options = options || {};
   if (options.THREE) options = {game:options};
   if (!options.game) throw new Error('Must specify a game.');
   self.game = options.game;
   options.marker = options.marker || false;
+  self.readable = true;
+  self._emitPng = false;
 
   self._camera = new self.game.THREE.PerspectiveCamera(
     60, self.game.width / self.game.height, 1, 10000
@@ -24,6 +31,7 @@ function Camera(options) {
 
   self._monitors = [];
 }
+util.inherits(Camera, Stream);
 module.exports = function(options) { return new Camera(options); };
 module.exports.Camera = Camera;
 
@@ -33,7 +41,9 @@ Camera.prototype.camera = function() { return this._camera; };
 Camera.prototype.monitor = function(width, height) {
   // must be equal otherwise generates WebGL mipmap errors
   width = width || 512; height = height || 512;
-  var monitor = new this.game.THREE.WebGLRenderTarget(width, height, {format: this.game.THREE.RGBFormat});
+  var monitor = new this.game.THREE.WebGLRenderTarget(width, height, {
+    format: this.game.THREE.RGBFormat
+  });
   this._monitors.push(monitor);
   return monitor;
 };
@@ -44,6 +54,9 @@ Camera.prototype.render = function(follow, offset, look) {
   self._monitors.forEach(function(monitor) {
     self.game.renderer.render(self.game.scene, self._camera, monitor, true);
   });
+  if (self.listeners('data').length > 0 && self._emitPng && !self._throttle) {
+    self.emit('data', self.game.renderer.domElement.toDataURL('image/png'));
+  }
   if (follow) {
     var camOffset = new self.game.THREE.Vector3(0, 0, 1)
     if (offset) camOffset = camOffset.addSelf(offset);
@@ -58,4 +71,13 @@ Camera.prototype.render = function(follow, offset, look) {
     self._camera.lookAt(follow.mesh.matrixWorld.multiplyVector3(lookOffset));
   }
   if (self._marker) self._marker.position.copy(this._camera.position);
+};
+
+Camera.prototype.resume = function() { this._emitPng = true; };
+Camera.prototype.pause = function() { this._emitPng = false; };
+Camera.prototype.destroy = function() {
+  this._emitPng = false;
+  this.readable = false;
+  this.removeAllListeners();
+  this.emit('close');
 };
