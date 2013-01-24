@@ -54,7 +54,7 @@ Camera.prototype.render = function(follow, offset, look) {
   self._monitors.forEach(function(monitor) {
     self.game.renderer.render(self.game.scene, self._camera, monitor, true);
   });
-  if (self.listeners('data').length > 0 && self._emitPng && !self._throttle) {
+  if (self.listeners('data').length > 0 && self._emitPng) {
     self.emit('data', self.game.renderer.domElement.toDataURL('image/png'));
   }
   if (follow) {
